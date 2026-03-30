@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Gestione Prenotazioni Academy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --primary-color: #0d6efd; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .course-card { transition: all 0.3s ease; border: none; border-radius: 12px; }
+        .course-card:hover { transform: translateY(-5px); shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .full-course { background-color: #ffebee; border: 2px solid #dc3545 !important; }
+        .badge-count { font-size: 1.1rem; }
+        .list-group-item { border-left: none; border-right: none; display: flex; justify-content: space-between; align-items: center; }
+        .stats-box { background: white; border-radius: 10px; padding: 20px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold text-dark">Prenotazione Corsi</h1>
+            <p class="text-muted">Gestisci le iscrizioni ai programmi di formazione</p>
+        </div>
+        <a href="calendario.pdf" target="_blank" class="btn btn-outline-primary btn-lg shadow-sm">
+            📅 Calendario Corsi
+        </a>
+    </div>
+
+    <div class="stats-box">
+        <h5 class="mb-4 text-uppercase fw-bold text-secondary small">Stato Iscrizioni (Tempo Reale)</h5>
+        <div id="statsContainer" class="row g-4 text-center">
+            </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-5 p-3">
+        <div class="card-body">
+            <h5 class="card-title mb-4">✨ Nuova Iscrizione</h5>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold">Partecipante</label>
+                    <select id="userSelect" class="form-select form-select-lg">
+                        <option value="">Caricamento elenco nomi...</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold">Corso di Formazione</label>
+                    <select id="courseSelect" class="form-select form-select-lg">
+                        </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button onclick="bookCourse()" class="btn btn-primary btn-lg w-100 shadow-sm">Iscriviti</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="coursesGrid" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+        </div>
+
+    <div class="mt-5 pt-4 border-top text-center">
+        <button onclick="downloadBackup()" class="btn btn-dark btn-lg px-5 shadow">
+            📥 Scarica Report Iscritti (.json)
+        </button>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // CONFIGURAZIONE E VARIABILI GLOBALI
+    // ==========================================
+    const NUM_CORSI = 4;        // Gestione numero corsi tramite variabile globale
+    const MAX_POSTI = 10;       // Limite partecipanti per corso
+    const API_URL = 'http://localhost:3000'; // Indirizzo del server Node.js
+    const NOMI_FILE = 'nomi.json';
+
+    let iscrizioni = {}; // Struttura: { "1": ["Nome1", "Nome2"], "2": [] ... }
+    let listaNomiPossibili = [];
+
+    // ==========================================
+    // INIZIALIZZAZIONE (FETCH DATI)
+    // ==========================================
+    async function initApp() {
+        try {
+            // 1. Carica i nomi dal file locale nomi.json
+            const respNomi = await fetch(NOMI_FILE);
+            listaNomiPossibili = await respNomi.json();
+            renderSelectNomi();
+
+            // 2. Carica le prenotazioni dal server Node.js
+            const respIscritti = await fetch(`${API_URL}/get-bookings`);
+            const datiSalvati = await respIscritti.json();
+
+            // Se il file è nuovo o vuoto, inizializza gli array per NUM_CORSI
+            for (let i = 1; i <= NUM_CORSI; i++) {
+                iscrizioni[i] = datiSalvati[i] || [];
+            }
+
+            updateUI();
+        } catch (error) {
+            console.error("Errore inizializzazione:", error);
+            alert("Attenzione: Assicurati che il server Node.js sia attivo!");
+        }
+    }
+
+    // ==========================================
+    // LOGICA DI AGGIORNAMENTO UI
+    // ==========================================
+    function updateUI() {
+        renderStats();
+        renderGrid();
+        renderCourseSelect();
+    }
+
+    function renderSelectNomi() {
+        const select = document.getElementById('userSelect');
+        select.innerHTML = '<option value="">-- Scegli Partecipante --</option>';
+        listaNomiPossibili.forEach(nome => {
+            const opt = document.createElement('option');
+            opt.value = nome;
+            opt.textContent = nome;
+            select.appendChild(opt);
+        });
+    }
+
+    function renderStats() {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = '';
+        for (let i = 1; i <= NUM_CORSI; i++) {
+            const count = iscrizioni[i].length;
+            const isFull = count >= MAX_POSTI;
+            container.innerHTML += `
+                <div class="col">
+                    <div class="p-2 border rounded bg-light">
+                        <div class="small text-muted mb-1">Corso ${i}</div>
+                        <div class="fw-bold ${isFull ? 'text-danger' : 'text-primary'} badge-count">
+                            ${count} / ${MAX_POSTI}
+                        </div>
+                    </div>
+                </div>`;
+        }
+    }
+
+    function renderCourseSelect() {
+        const select = document.getElementById('courseSelect');
+        select.innerHTML = '<option value="">-- Scegli Corso --</option>';
+        for (let i = 1; i <= NUM_CORSI; i++) {
+            const isFull = iscrizioni[i].length >= MAX_POSTI;
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.disabled = isFull;
+            opt.textContent = `Corso ${i} ${isFull ? '(COMPLETO)' : ''}`;
+            select.appendChild(opt);
+        }
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('coursesGrid');
+        grid.innerHTML = '';
+        
+        for (let i = 1; i <= NUM_CORSI; i++) {
+            const isFull = iscrizioni[i].length >= MAX_POSTI;
+            const cardHtml = `
+                <div class="col">
+                    <div class="card h-100 shadow-sm course-card ${isFull ? 'full-course' : ''}">
+                        <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Corso #${i}</h5>
+                            ${isFull ? '<span class="badge bg-danger">Full</span>' : '<span class="badge bg-success">Disponibile</span>'}
+                        </div>
+                        <div class="card-body px-4">
+                            <ul class="list-group list-group-flush small">
+                                ${iscrizioni[i].map((nome, index) => `
+                                    <li class="list-group-item">
+                                        <span>${nome}</span>
+                                        <button onclick="removeUser(${i}, ${index})" class="btn btn-sm text-danger p-0">
+                                            Rimuovi
+                                        </button>
+                                    </li>
+                                `).join('')}
+                                ${iscrizioni[i].length === 0 ? '<li class="list-group-item text-muted">Nessun iscritto</li>' : ''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>`;
+            grid.innerHTML += cardHtml;
+        }
+    }
+
+    // ==========================================
+    // AZIONI UTENTE E COMUNICAZIONE SERVER
+    // ==========================================
+    async function bookCourse() {
+        const user = document.getElementById('userSelect').value;
+        const courseId = document.getElementById('courseSelect').value;
+
+        if (!user || !courseId) return alert("Seleziona il tuo nome e il corso desiderato.");
+
+        // Controllo: Utente già iscritto a questo o altri corsi?
+        const giaIscritto = Object.values(iscrizioni).some(lista => lista.includes(user));
+        if (giaIscritto) {
+            return alert("Spiacente, sei già iscritto a un corso di formazione.");
+        }
+
+        // Controllo: Posti disponibili
+        if (iscrizioni[courseId].length >= MAX_POSTI) {
+            return alert("Questo corso è al completo!");
+        }
+
+        // Aggiunta locale
+        iscrizioni[courseId].push(user);
+        
+        // Salvataggio permanente su server Node.js
+        await sendDataToServer();
+    }
+
+    async function removeUser(courseId, index) {
+        if (confirm("Sei sicuro di voler cancellare questa prenotazione?")) {
+            iscrizioni[courseId].splice(index, 1);
+            await sendDataToServer();
+        }
+    }
+
+    async function sendDataToServer() {
+        try {
+            const response = await fetch(`${API_URL}/save-bookings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(iscrizioni)
+            });
+            if (response.ok) {
+                updateUI();
+            } else {
+                alert("Errore nel salvataggio dei dati sul server.");
+            }
+        } catch (e) {
+            alert("Impossibile connettersi al server per salvare i dati.");
+        }
+    }
+
+    function downloadBackup() {
+        const blob = new Blob([JSON.stringify(iscrizioni, null, 2)], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'backup_iscrizioni_corsi.json';
+        a.click();
+    }
+
+    // Avvio
+    initApp();
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
