@@ -1,19 +1,26 @@
 {
-  "name": "CorsiPowerBI",
-  "description": "Sito per la prenotazione ai corsi di PowerBI",
+  "name": "corsipowerbi",
   "version": "1.0.0",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lortop71/CorsiPowerBI.git"
-  },
+  "description": "Sito per la prenotazione ai corsi di PowerBI",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://github.com/lortop71/CorsiPowerBI",
   "bugs": {
     "url": "https://github.com/lortop71/CorsiPowerBI/issues"
   },
-  "homepage": "https://github.com/lortop71/CorsiPowerBI"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lortop71/CorsiPowerBI.git"
+  },
+  "license": "ISC",
+  "author": "LT",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "serve": "^14.2.6"
+  }
 }

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Gestione Prenotazioni Academy</title>
+    <title>Sistema Gestione Prenotazioni Corsi PowerBI</title>
+	<link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root { --primary-color: #0d6efd; }
@@ -21,8 +22,8 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
-            <h1 class="fw-bold text-dark">Prenotazione Corsi</h1>
-            <p class="text-muted">Gestisci le iscrizioni ai programmi di formazione</p>
+            <h1 class="fw-bold text-dark">Prenotazione Corsi PowerBI</h1>
+            <p class="text-muted">Gestisci le iscrizioni ai programmi di formazione sul sistema PowerBI</p>
         </div>
         <a href="calendario.pdf" target="_blank" class="btn btn-outline-primary btn-lg shadow-sm">
             📅 Calendario Corsi
@@ -46,9 +47,10 @@
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label class="form-label fw-semibold">Corso di Formazione</label>
+                    <label class="form-label fw-semibold">Classe</label>
                     <select id="courseSelect" class="form-select form-select-lg">
-                        </select>
+						<option value="">Seleziona la Classe...</option>
+					</select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button onclick="bookCourse()" class="btn btn-primary btn-lg w-100 shadow-sm">Iscriviti</button>
@@ -72,8 +74,13 @@
     // CONFIGURAZIONE E VARIABILI GLOBALI
     // ==========================================
     const NUM_CORSI = 4;        // Gestione numero corsi tramite variabile globale
-    const MAX_POSTI = 10;       // Limite partecipanti per corso
-    const API_URL = 'https://corsipowerbi.onrender.com'; // Indirizzo del server Node.js
+    const MAX_POSTI = 10;       // Limite partecipanti per classe
+	
+	// Rende l'URL dinamico: userà l'indirizzo del browser, ovunque esso sia
+	const API_URL = window.location.origin;
+	//const API_URL = 'http://localhost:3000'; 				// Indirizzo locale -->
+    //const API_URL = 'https://corsipowerbi.onrender.com'; 	// Indirizzo del server Node.js
+	
     const NOMI_FILE = 'nomi.json';
 
     let iscrizioni = {}; // Struttura: { "1": ["Nome1", "Nome2"], "2": [] ... }
@@ -134,7 +141,7 @@
             container.innerHTML += `
                 <div class="col">
                     <div class="p-2 border rounded bg-light">
-                        <div class="small text-muted mb-1">Corso ${i}</div>
+                        <div class="small text-muted mb-1">Classe ${i}</div>
                         <div class="fw-bold ${isFull ? 'text-danger' : 'text-primary'} badge-count">
                             ${count} / ${MAX_POSTI}
                         </div>
@@ -145,13 +152,13 @@
 
     function renderCourseSelect() {
         const select = document.getElementById('courseSelect');
-        select.innerHTML = '<option value="">-- Scegli Corso --</option>';
+        select.innerHTML = '<option value="">-- Scegli la Classe --</option>';
         for (let i = 1; i <= NUM_CORSI; i++) {
             const isFull = iscrizioni[i].length >= MAX_POSTI;
             const opt = document.createElement('option');
             opt.value = i;
             opt.disabled = isFull;
-            opt.textContent = `Corso ${i} ${isFull ? '(COMPLETO)' : ''}`;
+            opt.textContent = `Classe ${i} ${isFull ? '(COMPLETO)' : ''}`;
             select.appendChild(opt);
         }
     }
@@ -166,7 +173,7 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm course-card ${isFull ? 'full-course' : ''}">
                         <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold mb-0">Corso #${i}</h5>
+                            <h5 class="fw-bold mb-0">Classe #${i}</h5>
                             ${isFull ? '<span class="badge bg-danger">Full</span>' : '<span class="badge bg-success">Disponibile</span>'}
                         </div>
                         <div class="card-body px-4">
@@ -195,17 +202,17 @@
         const user = document.getElementById('userSelect').value;
         const courseId = document.getElementById('courseSelect').value;
 
-        if (!user || !courseId) return alert("Seleziona il tuo nome e il corso desiderato.");
+        if (!user || !courseId) return alert("Seleziona il tuo nome e la classe desiderata.");
 
         // Controllo: Utente già iscritto a questo o altri corsi?
         const giaIscritto = Object.values(iscrizioni).some(lista => lista.includes(user));
         if (giaIscritto) {
-            return alert("Spiacente, sei già iscritto a un corso di formazione.");
+            return alert("Spiacente, sei già iscritto a una classe di formazione.");
         }
 
         // Controllo: Posti disponibili
         if (iscrizioni[courseId].length >= MAX_POSTI) {
-            return alert("Questo corso è al completo!");
+            return alert("Questa classe è al completo!");
         }
 
         // Aggiunta locale
