@@ -105,7 +105,7 @@
                 iscrizioni[i] = datiSalvati[i] || [];
             }
 
-            updateUI();
+            renderApp();
         } catch (error) {
             console.error("Errore inizializzazione:", error);
             alert("Attenzione: Assicurati che il server Node.js sia attivo!");
@@ -115,7 +115,7 @@
     // ==========================================
     // LOGICA DI AGGIORNAMENTO UI
     // ==========================================
-    function updateUI() {
+    function renderApp() {
         renderStats();
         renderGrid();
         renderCourseSelect();
@@ -237,7 +237,7 @@
                 body: JSON.stringify(iscrizioni)
             });
             if (response.ok) {
-                updateUI();
+                renderApp();
             } else {
                 alert("Errore nel salvataggio dei dati sul server.");
             }
