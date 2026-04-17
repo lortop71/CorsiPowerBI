@@ -136,7 +136,7 @@
         const container = document.getElementById('statsContainer');
         container.innerHTML = '';
         for (let i = 1; i <= NUM_CORSI; i++) {
-            const count = (iscrizioni[id] || []).length;
+            const count = (iscrizioni[i] || []).length;
             const isFull = count >= MAX_POSTI;
             container.innerHTML += `
                 <div class="col">
@@ -154,7 +154,7 @@
         const select = document.getElementById('courseSelect');
         select.innerHTML = '<option value="">-- Scegli la Classe --</option>';
         for (let i = 1; i <= NUM_CORSI; i++) {
-            const isFull = (iscrizioni[id] || []).length >= MAX_POSTI;
+            const isFull = (iscrizioni[i] || []).length >= MAX_POSTI;
             const opt = document.createElement('option');
             opt.value = i;
             opt.disabled = isFull;
@@ -168,7 +168,7 @@
         grid.innerHTML = '';
         
         for (let i = 1; i <= NUM_CORSI; i++) {
-            const isFull = (iscrizioni[id] || []).length >= MAX_POSTI;
+            const isFull = (iscrizioni[i] || []).length >= MAX_POSTI;
             const cardHtml = `
                 <div class="col">
                     <div class="card h-100 shadow-sm course-card ${isFull ? 'full-course' : ''}">
@@ -186,7 +186,7 @@
                                         </button>
                                     </li>
                                 `).join('')}
-                                ${(iscrizioni[id] || []).length === 0 ? '<li class="list-group-item text-muted">Nessun iscritto</li>' : ''}
+                                ${(iscrizioni[i] || []).length === 0 ? '<li class="list-group-item text-muted">Nessun iscritto</li>' : ''}
                             </ul>
                         </div>
                     </div>
