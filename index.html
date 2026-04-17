@@ -230,21 +230,25 @@
     }
 
     async function sendDataToServer() {
-        try {
-            const response = await fetch(`${API_URL}/save-bookings`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(iscrizioni)
-            });
-            if (response.ok) {
-                renderApp();
-            } else {
-                alert("Errore nel salvataggio dei dati sul server.");
-            }
-        } catch (e) {
-            alert("Impossibile connettersi al server per salvare i dati.");
-        }
-    }
+		try {
+			const response = await fetch(`${API_URL}/save-bookings`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(iscrizioni) // Invia l'intero oggetto aggiornato
+			});
+
+			if (response.ok) {
+				console.log("✅ Dati salvati con successo su MongoDB");
+				// Non serve chiamare initApp(), basta ridisegnare la pagina locale
+				renderApp(); 
+			} else {
+				alert("Errore durante il salvataggio sul database.");
+			}
+		} catch (e) {
+			console.error("Errore di rete:", e);
+			alert("Impossibile connettersi al server.");
+		}
+	}
 
     function downloadBackup() {
         const blob = new Blob([JSON.stringify(iscrizioni, null, 2)], { type: 'application/json' });
