@@ -178,7 +178,7 @@
                         </div>
                         <div class="card-body px-4">
                             <ul class="list-group list-group-flush small">
-                                ${iscrizioni[i].map((nome, index) => `
+                                ${(iscrizioni[i] || []).map((nome, index) => `
                                     <li class="list-group-item">
                                         <span>${nome}</span>
                                         <button onclick="removeUser(${i}, ${index})" class="btn btn-sm text-danger p-0">
@@ -262,23 +262,30 @@
     // Avvio
     initApp();
 	
+	// Funzione di utilità per evitare i "undefined"
+	function normalizzaDati(data) {
+		const puliti = {};
+		for (let i = 1; i <= NUM_CORSI; i++) {
+			// Se data[i] esiste usalo, altrimenti metti un array vuoto
+			puliti[i] = data[i] || [];
+		}
+		return puliti;
+	}
+	
 	// Controlla nuovi dati ogni 5 secondi (5000 millisecondi)
 	setInterval(async () => {
 		try {
-			const respBookings = await fetch(`${API_URL}/get-bookings`);
-			if (!respBookings.ok) throw new Error("Errore server");
+			const resp = await fetch(`${API_URL}/get-bookings`);
+			const data Grezzi = await resp.json();
 			
-			const data = await respBookings.json();
-			
-			// Confrontiamo i dati nuovi con quelli attuali in memoria
-			// Usiamo JSON.stringify per un confronto veloce tra oggetti
-			if (JSON.stringify(data) !== JSON.stringify(iscrizioni)) {
-				console.log("Aggiornamento dati in corso...");
-				iscrizioni = data;
-				renderApp(); // Riesegue il disegno della pagina con i dati nuovi
+			const dataPuliti = normalizzaDati(dataGrezzi);
+
+			if (JSON.stringify(dataPuliti) !== JSON.stringify(iscrizioni)) {
+				iscrizioni = dataPuliti;
+				renderApp();
 			}
-		} catch (error) {
-			console.error("Errore durante il polling:", error);
+		} catch (e) {
+			console.error("Errore polling:", e);
 		}
 	}, 5000); // 5 secondi è un buon compromesso tra velocità e carico del server
 
