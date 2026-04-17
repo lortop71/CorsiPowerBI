@@ -276,7 +276,7 @@
 	setInterval(async () => {
 		try {
 			const resp = await fetch(`${API_URL}/get-bookings`);
-			const data Grezzi = await resp.json();
+			const dataGrezzi = await resp.json();
 			
 			const dataPuliti = normalizzaDati(dataGrezzi);
 
