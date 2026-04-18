@@ -12,8 +12,8 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/academy_locale";
 
 mongoose.connect(MONGO_URI)
-  .then(() => console.log("✅ Connesso a MongoDB Atlas"))
-  .catch(err => console.error("❌ Errore connessione Mongo:", err));
+  .then(() => console.log("Connesso a MongoDB Atlas"))
+  .catch(err => console.error("Errore connessione Mongo:", err));
 
 // Definiamo lo schema dei dati: un corso ha un ID (numero) e una lista di iscritti (array di stringhe)
 const CorsoSchema = new mongoose.Schema({
@@ -81,5 +81,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`🚀 Server in esecuzione su porta ${PORT}`);
+    console.log(`Server in esecuzione su porta ${PORT}`);
 });
