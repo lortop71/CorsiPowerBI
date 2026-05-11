@@ -138,10 +138,11 @@
         for (let i = 1; i <= NUM_CORSI; i++) {
             const count = (iscrizioni[i] || []).length;
             const isFull = count >= MAX_POSTI;
+            // <div class="small text-muted mb-1">Classe ${i}</div>
             container.innerHTML += `
                 <div class="col">
                     <div class="p-2 border rounded bg-light">
-                        <div class="small text-muted mb-1">Classe ${i}</div>
+                        <div class="fw-bold mb-0">Classe ${i}</div>
                         <div class="fw-bold ${isFull ? 'text-danger' : 'text-primary'} badge-count">
                             ${count} / ${MAX_POSTI}
                         </div>
