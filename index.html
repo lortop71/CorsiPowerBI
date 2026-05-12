@@ -325,6 +325,9 @@
 
         // Aggiunta locale
         iscrizioni[courseId].push(user);
+
+        // Ordina alfabeticamente (opzionale, ma migliora la leggibilità)
+        iscrizioni[courseId].sort((a, b) => a.localeCompare(b));
         
         // Salvataggio permanente su MongoDB
         await sendDataToServer();
@@ -377,12 +380,12 @@
     // Avvio
     initApp();
 	
-	// Funzione di utilità per evitare i "undefined"
+	// Funzione di utilità per evitare gli "undefined"
 	function normalizzaDati(data) {
 		const puliti = {};
 		for (let i = 1; i <= NUM_CORSI; i++) {
-			// Se data[i] esiste usalo, altrimenti metti un array vuoto
-			puliti[i] = data[i] || [];
+            // Se data[i] esiste, lo ordiniamo, altrimenti mettiamo un array vuoto
+            puliti[i] = data[i] ? data[i].sort((a, b) => a.localeCompare(b)) : [];
 		}
 		return puliti;
 	}
