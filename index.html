@@ -7,6 +7,15 @@
 	<link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 50px; /* Arrotonda la barra */
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            transition: width 0.6s ease; /* Rende il movimento della barra fluido */
+        }
         :root { --primary-color: #0d6efd; }
         body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .course-card { transition: all 0.3s ease; border: none; border-radius: 12px; }
