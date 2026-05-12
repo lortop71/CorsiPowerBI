@@ -302,21 +302,25 @@
         const user = document.getElementById('userSelect').value;
         const courseId = document.getElementById('courseSelect').value;
 
-        if (!user || !courseId)  
+        if (!user || !courseId) {
             // return alert("Seleziona il tuo nome e la classe desiderata.");
             apriModale('avviso','Dati mancanti','Seleziona il tuo nome e la classe desiderata.'); 
+            return
+        }
 
         // Controllo: Utente già iscritto a questo o altri corsi?
         const giaIscritto = Object.values(iscrizioni).some(lista => lista.includes(user));
         if (giaIscritto) {
             // return alert("Spiacente, sei già iscritto a una classe di formazione.");
             apriModale('avviso','Iscrizione negata','Spiacente, sei già iscritto a una classe di formazione.'); 
+            return
         }
 
         // Controllo: Posti disponibili
         if (iscrizioni[courseId].length >= MAX_POSTI) {
             // return alert("Questa classe è al completo!");
             apriModale('avviso','Classe Completa','Questa classe ha raggiunto il limite massimo di partecipanti!'); 
+            return
         }
 
         // Aggiunta locale
