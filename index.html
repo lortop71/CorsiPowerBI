@@ -78,6 +78,24 @@
     </div>
 </div>
 
+<div class="modal fade" id="universalModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div id="modalHeader" class="modal-header">
+        <h5 class="modal-title" id="universalModalTitle">Titolo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="universalModalBody">
+        Contenuto del messaggio...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalBtnSecondary">Chiudi</button>
+        <button type="button" class="btn btn-danger" id="modalBtnConfirm" style="display: none;">Conferma</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     // ==========================================
     // CONFIGURAZIONE E VARIABILI GLOBALI
@@ -117,7 +135,8 @@
             renderApp();
         } catch (error) {
             console.error("Errore inizializzazione:", error);
-            alert("Attenzione: Assicurati che il server Node.js sia attivo!");
+            // alert("Attenzione: Assicurati che il server Node.js sia attivo!");
+            mostraAvviso("Errore di Connessione", "Attenzione: Assicurati che il server Node.js sia attivo e connesso a MongoDB!");
         }
     }
 
@@ -130,6 +149,57 @@
         renderCourseSelect();
     }
 
+    let callbackAzione = null; // Memorizza l'azione da compiere in caso di conferma
+
+    /**
+     * Mostra una modale parametrica
+     * @param {string} tipo - 'avviso' (solo tasto chiudi) o 'conferma' (tasto annulla + conferma)
+     * @param {string} titolo - Il titolo della modale
+     * @param {string} messaggio - Il corpo del messaggio
+     * @param {function} azione - (Opzionale) La funzione da eseguire se l'utente clicca su Conferma
+     */
+    function apriModale(tipo, titolo, messaggio, azione = null) {
+        const titoloElem = document.getElementById('universalModalTitle');
+        const corpoElem = document.getElementById('universalModalBody');
+        const btnConfirm = document.getElementById('modalBtnConfirm');
+        const btnSecondary = document.getElementById('modalBtnSecondary');
+        const header = document.getElementById('modalHeader');
+
+        // Reset testi e stati
+        titoloElem.textContent = titolo;
+        corpoElem.textContent = messaggio;
+        callbackAzione = azione;
+
+        if (tipo === 'conferma') {
+            // Stile per Conferma/Pericolo
+            header.className = "modal-header bg-light";
+            btnSecondary.textContent = "Annulla";
+            btnConfirm.style.display = "block"; // Mostra il tasto conferma
+            btnConfirm.className = "btn btn-danger";
+        } else {
+            // Stile per Avviso standard
+            header.className = "modal-header bg-primary text-white";
+            btnSecondary.textContent = "Ho capito";
+            btnConfirm.style.display = "none"; // Nasconde il tasto conferma
+        }
+
+        // Inizializza e mostra la modale
+        const myModal = new bootstrap.Modal(document.getElementById('universalModal'));
+        myModal.show();
+    }
+
+    // Gestione del click sul tasto conferma
+    document.getElementById('modalBtnConfirm').onclick = async function() {
+        if (callbackAzione) {
+            await callbackAzione(); // Esegue l'azione passata come parametro
+            
+            // Chiude la modale dopo l'azione
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('universalModal'));
+            modalInstance.hide();
+        }
+    };
+    
+    // Popola il dropdown dei nomi con quelli caricati da nomi.json
     function renderSelectNomi() {
         const select = document.getElementById('userSelect');
         select.innerHTML = '<option value="">-- Scegli Partecipante --</option>';
@@ -141,42 +211,44 @@
         });
     }
 
-function renderStats() {
-    const container = document.getElementById('statsContainer');
-    container.innerHTML = '';
-    
-    for (let i = 1; i <= NUM_CORSI; i++) {
-        const count = (iscrizioni[i] || []).length;
-        const percent = (count / MAX_POSTI) * 100; // Calcola la percentuale
-        const isFull = count >= MAX_POSTI;
+    // Renderizza le statistiche di iscrizione con barre di progresso e colori dinamici
+    function renderStats() {
+        const container = document.getElementById('statsContainer');
+        container.innerHTML = '';
         
-        // Determina il colore della barra: verde (primary) o rosso (danger)
-        const barColor = isFull ? 'bg-danger' : 'bg-success';
+        for (let i = 1; i <= NUM_CORSI; i++) {
+            const count = (iscrizioni[i] || []).length;
+            const percent = (count / MAX_POSTI) * 100; // Calcola la percentuale
+            const isFull = count >= MAX_POSTI;
+            
+            // Determina il colore della barra: verde (primary) o rosso (danger)
+            const barColor = isFull ? 'bg-danger' : 'bg-success';
 
-        container.innerHTML += `
-            <div class="col">
-                <div class="p-3 border rounded bg-white shadow-sm">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small text-muted fw-bold text-uppercase">Classe #${i}</span>
-                        <span class="fw-bold ${isFull ? 'text-danger' : 'text-success'}">
-                            ${count} / ${MAX_POSTI}
-                        </span>
-                    </div>
-                    
-                    <div class="progress" style="height: 10px;">
-                        <div class="progress-bar ${barColor} progress-bar-striped progress-bar-animated" 
-                             role="progressbar" 
-                             style="width: ${percent}%" 
-                             aria-valuenow="${percent}" 
-                             aria-valuemin="0" 
-                             aria-valuemax="100">
+            container.innerHTML += `
+                <div class="col">
+                    <div class="p-3 border rounded bg-white shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-muted fw-bold text-uppercase">Classe #${i}</span>
+                            <span class="fw-bold ${isFull ? 'text-danger' : 'text-success'}">
+                                ${count} / ${MAX_POSTI}
+                            </span>
+                        </div>
+                        
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar ${barColor} progress-bar-striped progress-bar-animated" 
+                                role="progressbar" 
+                                style="width: ${percent}%" 
+                                aria-valuenow="${percent}" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
+        }
     }
-}
 
+    // Popola il dropdown delle classi, disabilitando quelle al completo
     function renderCourseSelect() {
         const select = document.getElementById('courseSelect');
         select.innerHTML = '<option value="">-- Scegli la Classe --</option>';
@@ -190,6 +262,7 @@ function renderStats() {
         }
     }
 
+    // Renderizza le card dei corsi con i partecipanti e i pulsanti di rimozione
     function renderGrid() {
         const grid = document.getElementById('coursesGrid');
         grid.innerHTML = '';
@@ -229,17 +302,21 @@ function renderStats() {
         const user = document.getElementById('userSelect').value;
         const courseId = document.getElementById('courseSelect').value;
 
-        if (!user || !courseId) return alert("Seleziona il tuo nome e la classe desiderata.");
+        if (!user || !courseId)  
+            // return alert("Seleziona il tuo nome e la classe desiderata.");
+            apriModale('avviso','Dati mancanti','Seleziona il tuo nome e la classe desiderata.'); 
 
         // Controllo: Utente già iscritto a questo o altri corsi?
         const giaIscritto = Object.values(iscrizioni).some(lista => lista.includes(user));
         if (giaIscritto) {
-            return alert("Spiacente, sei già iscritto a una classe di formazione.");
+            // return alert("Spiacente, sei già iscritto a una classe di formazione.");
+            apriModale('avviso','Iscrizione negata','Spiacente, sei già iscritto a una classe di formazione.'); 
         }
 
         // Controllo: Posti disponibili
         if (iscrizioni[courseId].length >= MAX_POSTI) {
-            return alert("Questa classe è al completo!");
+            // return alert("Questa classe è al completo!");
+            apriModale('avviso','Classe Completa','Questa classe ha raggiunto il limite massimo di partecipanti!'); 
         }
 
         // Aggiunta locale
@@ -249,13 +326,18 @@ function renderStats() {
         await sendDataToServer();
     }
 
-    async function removeUser(courseId, index) {
-        if (confirm("Sei sicuro di voler cancellare questa prenotazione?")) {
-            iscrizioni[courseId].splice(index, 1);
-            await sendDataToServer();
-        }
+    // Rimuove un utente da una classe specifica, con conferma tramite modale
+    function removeUser(courseId, index) {
+        apriModale('conferma','Cancellazione','Vuoi davvero eliminare questa prenotazione?', 
+            async () => {
+                // Questa è l'azione che verrà eseguita solo se clicca "Conferma"
+                iscrizioni[courseId].splice(index, 1);
+                await sendDataToServer();
+            }
+        );
     }
 
+    // Invia i dati aggiornati al server Node.js per salvarli su MongoDB
     async function sendDataToServer() {
 		try {
 			const response = await fetch(`${API_URL}/save-bookings`, {
@@ -269,11 +351,13 @@ function renderStats() {
 				// Non serve chiamare initApp(), basta ridisegnare la pagina locale
 				renderApp(); 
 			} else {
-				alert("Errore durante il salvataggio sul database.");
+				// alert("Errore durante il salvataggio sul database.");
+                apriModale('avviso','Errore DB','Errore durante il salvataggio sul database cloud.'); 
 			}
 		} catch (e) {
 			console.error("Errore di rete:", e);
-			alert("Impossibile connettersi al server.");
+			// alert("Impossibile connettersi al server.");
+            apriModale('avviso','Errore di Rete','Impossibile comunicare con il server. Verifica la tua connessione.'); 
 		}
 	}
 
