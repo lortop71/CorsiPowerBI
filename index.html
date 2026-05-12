@@ -141,25 +141,6 @@
         });
     }
 
-    // function renderStats() {
-    //     const container = document.getElementById('statsContainer');
-    //     container.innerHTML = '';
-    //     for (let i = 1; i <= NUM_CORSI; i++) {
-    //         const count = (iscrizioni[i] || []).length;
-    //         const isFull = count >= MAX_POSTI;
-    //         // <div class="small text-muted mb-1">Classe #${i}</div>
-    //         container.innerHTML += `
-    //             <div class="col">
-    //                 <div class="p-2 border rounded bg-light">
-    //                     <div class="fw-bold mb-0">Classe #${i}</div>
-    //                     <div class="fw-bold ${isFull ? 'text-danger' : 'text-primary'} badge-count">
-    //                         ${count} / ${MAX_POSTI}
-    //                     </div>
-    //                 </div>
-    //             </div>`;
-    //     }
-    // }
-
 function renderStats() {
     const container = document.getElementById('statsContainer');
     container.innerHTML = '';
@@ -170,14 +151,14 @@ function renderStats() {
         const isFull = count >= MAX_POSTI;
         
         // Determina il colore della barra: blu (primary) o rosso (danger)
-        const barColor = isFull ? 'bg-danger' : 'bg-primary';
+        const barColor = isFull ? 'bg-danger' : 'bg-success';
 
         container.innerHTML += `
             <div class="col">
                 <div class="p-3 border rounded bg-white shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="small text-muted fw-bold text-uppercase">Classe #${i}</span>
-                        <span class="fw-bold ${isFull ? 'text-danger' : 'text-primary'}">
+                        <span class="fw-bold ${isFull ? 'text-danger' : 'text-success'}">
                             ${count} / ${MAX_POSTI}
                         </span>
                     </div>
