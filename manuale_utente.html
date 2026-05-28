@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuale Utente - Portale Prenotazione Corsi PowerBI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .sidebar {
+            background-color: #fff;
+            border-right: 1px solid #e3e6f0;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        .nav-link {
+            color: #4e73df;
+            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #f0f3ff;
+            color: #0d6efd;
+        }
+        .card-step {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card-step:hover {
+            transform: translateY(-2px);
+        }
+        .step-number {
+            background-color: #0d6efd;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .mock-ui {
+            background: #e9ecef;
+            border: 2px dashed #ced4da;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 d-none d-md-block sidebar p-3">
+            <div class="position-sticky pt-3">
+                <div class="d-flex align-items-center mb-4 px-2">
+                    <i class="fa-solid fa-book-open text-primary fs-4 me-2"></i>
+                    <h5 class="m-0 fw-bold">Guida Utente</h5>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#introduzione">
+                            <i class="fa-solid fa-house me-2"></i> Introduzione
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#stato-classi">
+                            <i class="fa-solid fa-chart-bar me-2"></i> 1. Monitorare i Posti
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#iscrizione">
+                            <i class="fa-solid fa-user-plus me-2"></i> 2. Come Iscriversi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#regole">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i> Regole Importanti
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cancellazione">
+                            <i class="fa-solid fa-user-minus me-2"></i> 3. Disiscriversi
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="text-muted small px-2">
+                    <p><i class="fa-solid fa-circle-info me-1"></i> Sistema in tempo reale. I dati si aggiornano da soli ogni 5 secondi.</p>
+                </div>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <div>
+                    <span class="badge bg-primary mb-2">Manuale Operativo</span>
+                    <h1 class="h2 fw-bold text-dark">Portale Prenotazione Classi PowerBI</h1>
+                    <p class="text-muted">Guida pratica per l'utente finale all'utilizzo della piattaforma.</p>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                    <i class="fa-solid fa-print me-2"></i>Stampa Guida
+                </button>
+            </div>
+
+            <section id="introduzione" class="mb-5">
+                <div class="card card-step p-4 bg-white">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-circle-info me-2"></i>Benvenuto nel Portale Iscrizioni</h4>
+                    <p class="lead text-muted">
+                        Questa piattaforma ti permette di iscriverti in modo autonomo e rapido a una delle 4 classi disponibili per il corso di formazione PowerBI. 
+                    </p>
+                    <p>
+                        Il sistema funziona in <strong>tempo reale</strong>: questo significa che vedi istantaneamente i posti occupati dai tuoi colleghi e, non appena effettui un'azione, lo stato viene salvato nel cloud in totale sicurezza.
+                    </p>
+                </div>
+            </section>
+
+            <section id="stato-classi" class="mb-5">
+                <h3 class="fw-bold mb-3">1. Monitorare lo stato delle classi</h3>
+                <p class="text-muted">Prima di iscriverti, controlla la disponibilità delle aule nella parte superiore della schermata.</p>
+                
+                <div class="card card-step p-4 bg-white mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5><i class="fa-solid fa-eye text-success me-2"></i>Le Barre di Stato Progressive</h5>
+                            <p>Ogni classe può ospitare al massimo <strong>10 partecipanti</strong>. Lo stato è indicato visivamente dalle barre colorate:</p>
+                            <ul>
+                                <li><strong class="text-success">Barra Verde:</strong> Indica che ci sono ancora posti disponibili nella classe. Il contatore mostra quanti posti sono occupati (es. <code>4 / 10</code>).</li>
+                                <li><strong class="text-danger">Barra Rossa:</strong> La classe ha raggiunto la capienza massima (<code>10 / 10</code>). È al completo e non accetta altre iscrizioni.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded bg-light">
+                                <div class="d-flex justify-content-between small fw-bold mb-1">
+                                    <span>ANTEPRIMA CLASSE 1</span>
+                                    <span class="text-success">5 / 10</span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 50%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="iscrizione" class="mb-5">
+                <h3 class="fw-bold mb-3">2. Come registrarsi a una classe</h3>
+                <p class="text-muted">Segui questi semplici passaggi all'interno del pannello di registrazione:</p>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card card-step h-100 p-3 bg-white">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="step-number me-2">1</div>
+                                <h6 class="m-0 fw-bold">Scegli il tuo nome</h6>
+                            </div>
+                            <p class="small text-muted">Clicca sul menu a tendina <strong>"Seleziona il tuo nome"</strong> e cerca il tuo nominativo dall'elenco alfabetico.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-step h-100 p-3 bg-white">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="step-number me-2">2</div>
+                                <h6 class="m-0 fw-bold">Scegli la classe</h6>
+                            </div>
+                            <p class="small text-muted">Clicca sul secondo menu a tendina <strong>"Scegli la classe"</strong> e seleziona l'aula a cui desideri partecipare (da 1 a 4).</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-step h-100 p-3 bg-white">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="step-number me-2">3</div>
+                                <h6 class="m-0 fw-bold">Conferma</h6>
+                            </div>
+                            <p class="small text-muted">Premi il pulsante blu <strong>"Iscriviti"</strong>. Il tuo nome comparirà immediatamente all'interno della griglia di riepilogo della classe scelta.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="regole" class="mb-5">
+                <div class="alert alert-warning border-0 shadow-sm p-4">
+                    <h5 class="fw-bold text-warning-dark"><i class="fa-solid fa-shield-halved me-2"></i>Regole di Sistema e Messaggi d'Errore</h5>
+                    <p class="mb-3">La piattaforma applica dei controlli rigidi. Se visualizzi una finestra popup al centro dello schermo, potrebbe essere dovuto a uno di questi motivi:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-2">
+                                <i class="fa-solid fa-circle-exclamation text-danger mt-1 me-2"></i>
+                                <div>
+                                    <strong>Sei già iscritto:</strong> Non puoi iscriverti a più classi. Se il tuo nome è già presente nella Classe 1, il sistema ti impedirà di inserirti anche nella Classe 3.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start mb-2">
+                                <i class="fa-solid fa-circle-exclamation text-danger mt-1 me-2"></i>
+                                <div>
+                                    <strong>Classe al completo:</strong> Se provi a forzare l'iscrizione in un'aula che ha già raggiunto i 10 partecipanti, riceverai l'avviso di blocco.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cancellazione" class="mb-5">
+                <h3 class="fw-bold mb-3">3. Come annullare o modificare un'iscrizione</h3>
+                <p class="text-muted">Se hai sbagliato classe o vuoi liberare il tuo posto per un collega, puoi disiscriverti in qualsiasi momento.</p>
+
+                <div class="card card-step p-4 bg-white">
+                    <ol class="mb-3">
+                        <li class="mb-2">Individua la scheda della classe in cui compare il tuo nome.</li>
+                        <li class="mb-2">Accanto al tuo nome, fai clic sul pulsante rosso <strong>"Rimuovi"</strong> (icona del cestino <i class="fa-solid fa-trash text-danger"></i>).</li>
+                        <li class="mb-2">Apparirà una finestra di conferma al centro dello schermo che ti domanderà: <em>"Vuoi davvero eliminare questa prenotazione?"</em>.</li>
+                        <li>Clicca su <strong>"Conferma"</strong> per cancellarti definitivamente, oppure su <strong>"Annulla"</strong> se hai cliccato per errore.</li>
+                    </ol>
+                    <div class="alert alert-info mb-0 border-0">
+                        <i class="fa-solid fa-lightbulb me-2"></i><strong>Nota sull'ordinamento:</strong> All'interno delle tabelle, i nomi sono sempre organizzati in <strong>ordine alfabetico automatico</strong>. Quando ti iscrivi o ti cancelli, la lista si riordina da sola istantaneamente per facilitare la lettura.
+                    </div>
+                </div>
+            </section>
+
+            <footer class="pt-5 my-5 text-muted border-top text-center small">
+                Sistema Gestione Corsi PowerBI &copy; 2026 &middot; Sviluppato in modalità Full-Stack con Node.js e MongoDB.
+            </footer>
+
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
